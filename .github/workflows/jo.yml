@@ -48,16 +48,14 @@ jobs:
               lines.append(f'#EXTINF:-1 tvg-id="{gid}" tvg-logo="{logo}" group-title="{group}",{name}')
 
               if kid not in ["", "null", None] and key not in ["", "null", None]:
-                      lines.append("#KODIPROP:inputstream=inputstream.adaptive")
-                      lines.append("#KODIPROP:inputstream.adaptive.manifest_type=mpd")
-                      lines.append("#KODIPROP:inputstream.adaptive.license_type=org.w3.clearkey")
-                      lines.append(f"#KODIPROP:inputstream.adaptive.license_key={kid}:{key}")
-                      lines.append("#EXTVLCOPT:http-user-agent=Mozilla/5.0")
-                      lines.append("#EXTVLCOPT:http-referrer=https://www.jiotv.com/")
-                      lines.append("#EXTVLCOPT:http-origin=https://www.jiotv.com/")
+                  lines.append("#KODIPROP:inputstream.adaptive.license_type=clearkey")
+                  lines.append(f"#KODIPROP:inputstream.adaptive.license_key={kid}:{key}")
 
-                      lines.append(stream)
-                      lines.append("")
+                  if "?" in stream:
+                  stream = stream.replace("?", "?|Cookie=", 1)
+
+                  lines.append(stream)
+
 
           with open("jtv.m3u", "w", encoding="utf-8") as f:
               f.write("\n".join(lines))
