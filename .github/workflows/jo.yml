@@ -73,4 +73,3 @@ steps:
       git add jtv.m3u
       git commit -m "Auto update playlist" || echo "No changes"
       git push
-```
