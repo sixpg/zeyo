@@ -56,7 +56,7 @@ jobs:
                   base, query = stream.split("?", 1)
                   stream = f"{base}?|Cookie={query}"
               elif default_cookie:
-                  stream = f"{stream}?|Cookie={default_cookie}"
+                  stream = f"{stream}?Cookie={default_cookie}"
 
               lines.append(f'#EXTINF:-1 tvg-id="{gid}" tvg-logo="{logo}" group-title="{group}",{name}')
 
