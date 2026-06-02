@@ -52,7 +52,8 @@ jobs:
                   lines.append(f"#KODIPROP:inputstream.adaptive.license_key={kid}:{key}")
 
                   if "?" in stream:
-                  stream = stream.replace("?", "?|Cookie=", 1)
+                   base, query = stream.split("?", 1)
+                   stream = f"{base}?|Cookie={query}"
 
                   lines.append(stream)
 
