@@ -29,7 +29,9 @@ jobs:
           COOKIE_URL: ${{ secrets.COOKIE_URL }}
         run: |
           python <<EOF
-          import os, json, requests
+          import os
+          import json
+          import requests
 
           url = os.environ["API_URL"]
           cookie_url = os.environ["COOKIE_URL"]
@@ -37,30 +39,42 @@ jobs:
           r = requests.get(url, timeout=60)
           data = r.json()
 
-          # Fetch external cookie
+          # Fetch external cookie dynamically
           try:
               cookie_data = requests.get(cookie_url, timeout=30).json()
-              default_cookie = cookie_data.get("cookie", "")
+
+              default_cookie = ""
+
+              for item in cookie_data.get("successful_results", []):
+                  final_url = (
+                      item.get("playback_url", "")
+                      or item.get("final_url", "")
+                  )
+
+                  if "?" in final_url:
+                      _, default_cookie = final_url.split("?", 1)
+                      break
+
           except:
               default_cookie = ""
 
           lines = ['#EXTM3U']
 
           for ch in data:
-              name = ch.get("channel_name","Unknown")
-              logo = ch.get("channel_logo","")
-              gid = ch.get("channel_id","")
-              group = ch.get("channel_genre","Live TV")
-              stream = ch.get("channel_url","")
-              kid = ch.get("keyId","")
-              key = ch.get("key","")
+              name = ch.get("channel_name", "Unknown")
+              logo = ch.get("channel_logo", "")
+              gid = ch.get("channel_id", "")
+              group = ch.get("channel_genre", "Live TV")
+              stream = ch.get("channel_url", "")
+              kid = ch.get("keyId", "")
+              key = ch.get("key", "")
 
-              # Existing stream already has cookie
+              # Existing streams already having cookies
               if "?" in stream:
                   base, query = stream.split("?", 1)
                   stream = f"{base}?|Cookie={query}"
 
-              # Streams without cookie use external cookie
+              # Streams without cookies
               elif default_cookie:
                   stream = f"{stream}|Cookie={default_cookie}"
 
@@ -74,7 +88,9 @@ jobs:
                   lines.append("#KODIPROP:inputstream=inputstream.adaptive")
                   lines.append("#KODIPROP:inputstream.adaptive.manifest_type=mpd")
                   lines.append("#KODIPROP:inputstream.adaptive.license_type=org.w3.clearkey")
-                  lines.append(f"#KODIPROP:inputstream.adaptive.license_key={kid}:{key}")
+                  lines.append(
+                      f"#KODIPROP:inputstream.adaptive.license_key={kid}:{key}"
+                  )
                   lines.append("#EXTVLCOPT:http-user-agent=Mozilla/5.0")
                   lines.append("#EXTVLCOPT:http-referrer=https://www.jiotv.com/")
                   lines.append("#EXTVLCOPT:http-origin=https://www.jiotv.com/")
