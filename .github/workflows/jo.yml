@@ -39,29 +39,30 @@ jobs:
           r = requests.get(url, timeout=60)
           data = r.json()
 
-          # Fetch external cookie dynamically
+          # Fetch external cookies dynamically
+          channel_cookies = {}
+
           try:
               cookie_data = requests.get(cookie_url, timeout=30).json()
 
-              default_cookie = ""
-
-              # Get cookie from failed_results final_url
               for item in cookie_data.get("failed_results", []):
+                  channel_id = str(item.get("channel_id", ""))
+
                   final_url = item.get("error_details", {}).get("final_url", "")
 
                   if "?" in final_url:
-                      _, default_cookie = final_url.split("?", 1)
-                      break
+                      _, cookie = final_url.split("?", 1)
+                      channel_cookies[channel_id] = cookie
 
           except:
-              default_cookie = ""
+              channel_cookies = {}
 
           lines = ['#EXTM3U']
 
           for ch in data:
               name = ch.get("channel_name", "Unknown")
               logo = ch.get("channel_logo", "")
-              gid = ch.get("channel_id", "")
+              gid = str(ch.get("channel_id", ""))
               group = ch.get("channel_genre", "Live TV")
               stream = ch.get("channel_url", "")
               kid = ch.get("keyId", "")
@@ -72,9 +73,9 @@ jobs:
                   base, query = stream.split("?", 1)
                   stream = f"{base}|Cookie={query}"
 
-              # Streams without cookies
-              elif default_cookie:
-                  stream = f"{stream}|Cookie={default_cookie}"
+              # Apply external cookie ONLY for matching channels
+              elif gid in channel_cookies:
+                  stream = f"{stream}|Cookie={channel_cookies[gid]}"
 
               lines.append(
                   f'#EXTINF:-1 tvg-id="{gid}" '
