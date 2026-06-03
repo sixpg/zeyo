@@ -78,15 +78,15 @@ jobs:
                   stream = f"{stream}|Cookie={channel_cookies[gid]}"
 
               lines.append(
-                  f'#EXTINF:-1 tvg-id="{gid}" '
-                  f'tvg-logo="{logo}" '
-                  f'group-title="{group}",{name}'
+                  f'#EXTINF:-1 group-title="{group}" '
+                  f'tvg-logo="{logo}",{name}'
               )
 
               if kid not in ["", "null", None] and key not in ["", "null", None]:
                   lines.append("#KODIPROP:inputstream.adaptive.license_type=clearkey")
                   lines.append(
-                      f"#KODIPROP:inputstream.adaptive.license_key={kid}:{key}"
+                      "#KODIPROP:inputstream.adaptive.license_key="
+                      "https://alex4528.site/jplus/license"
                   )
 
               lines.append(stream)
