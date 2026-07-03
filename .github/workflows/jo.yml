@@ -60,29 +60,17 @@ jobs:
           lines = ['#EXTM3U']
 
           for ch in data:
-              name = ch.get("channel_name", "Unknown")
-              logo = ch.get("channel_logo", "")
-              gid = str(ch.get("channel_id", ""))
-              group = ch.get("channel_genre", "Live TV")
+              name = ch.get("name", "Unknown")
+              logo = ch.get("logo", "")
+              gid = str(ch.get("id", ""))
+              group = ch.get("category", "Live TV")
 
-              # MPD URL directly from API
-              stream = (
-                  ch.get("mpd_url")
-                  or ch.get("channel_url")
-                  or ""
-              )
+              # URL directly from API
+              stream = ch.get("url", "")
 
               # Clearkeys directly from API
-              kid = (
-                  ch.get("kid")
-                  or ch.get("keyId")
-                  or ""
-              )
-
-              key = (
-                  ch.get("key")
-                  or ""
-              )
+              kid = ch.get("keyId", "")
+              key = ch.get("key", "")
 
               # Existing streams already having cookies
               if "?" in stream:
