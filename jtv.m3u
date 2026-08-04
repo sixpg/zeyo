@@ -367,7 +367,7 @@ https://jiotvmblive.cdn.jio.com/bpk-tv/Sony_SAB_MOB/WDVLive/index.mpd|Cookie=__h
 #EXTINF:-1 tvg-id="472" tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/AndTVHD.png" group-title="Entertainment",And TV HD
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=3698f70a682b503599cbc0fcae1f4df4:91a7ebf70d1fd76f59b9970c9525dad7
-https://jiotvpllive.cdn.jio.com/bpk-tv/AndTVHD_BTS/WDVLive/index.mpd|Cookie=__hdnea__=st=1785845131~exp=1785866731~acl=/bpk-tv/AndTVHD_BTS/WDVLive/*~hmac=fc120a34294c3793938df901b1a6e53b3404f55109d6f25d9008bcae6ea046d8
+https://jiotvpllive.cdn.jio.com/bpk-tv/AndTVHD_BTS/WDVLive/index.mpd|Cookie=__hdnea__=st=1785867008~exp=1785888608~acl=/bpk-tv/AndTVHD_BTS/WDVLive/*~hmac=21f67f215b4a1245c748a70c56c10710c2e37d1759242a30e3937d835259f43e
 
 #EXTINF:-1 tvg-id="473" tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/ZeeAnmol.png" group-title="Entertainment",Anmol TV
 #KODIPROP:inputstream.adaptive.license_type=clearkey
@@ -2511,12 +2511,12 @@ https://jiotvmblive.cdn.jio.com/bpk-tv/DD_Gyandarshan_MOB/WDVLive/index.mpd|Cook
 #EXTINF:-1 tvg-id="1332" tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/Nat_Geo_Wild_HD.png" group-title="English",Nat Geo Wild HD
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=999ce48f3e4d5de8b72c34f213176d9e:13e3ca891d32d158d8108007fef88388
-https://jiotvpllive.cdn.jio.com/bpk-tv/Nat_Geo_Wild_HD_BTS/WDVLive/index.mpd|Cookie=__hdnea__=st=1785843987~exp=1785865587~acl=/bpk-tv/Nat_Geo_Wild_HD_BTS/WDVLive/*~hmac=3ae3bc0f2a011095c8a8a283a63ebb4ea53153a2b0109d9f51f5fe48c55898f0
+https://jiotvpllive.cdn.jio.com/bpk-tv/Nat_Geo_Wild_HD_BTS/WDVLive/index.mpd|Cookie=__hdnea__=st=1785865817~exp=1785887417~acl=/bpk-tv/Nat_Geo_Wild_HD_BTS/WDVLive/*~hmac=5cbac19b2dbe078d0320ce567a1dcd635efb6c16c22722fa1b5d5a71d71d522a
 
 #EXTINF:-1 tvg-id="1335" tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/National_Geographic_HD.png" group-title="English",National Geographic HD
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=c3af1f24c63a5cc2bf71921eed28d1ff:80f4de40d7603bd8e45fe41db53f5198
-https://jiotvpllive.cdn.jio.com/bpk-tv/National_Geographic_HD_BTS/WDVLive/index.mpd|Cookie=__hdnea__=st=1785844001~exp=1785865601~acl=/bpk-tv/National_Geographic_HD_BTS/WDVLive/*~hmac=50267ce1193fbc1ced60a59c7153cc79482ae9026781622bfdb80dd3b7337552
+https://jiotvpllive.cdn.jio.com/bpk-tv/National_Geographic_HD_BTS/WDVLive/index.mpd|Cookie=__hdnea__=st=1785865819~exp=1785887419~acl=/bpk-tv/National_Geographic_HD_BTS/WDVLive/*~hmac=8f6fa98c1bcd87dc2b6ae0f8e71135e20d933941a433f542dcddc9007cebc736
 
 #EXTINF:-1 tvg-id="1338" tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/RT_TV.png" group-title="English",RT India
 #KODIPROP:inputstream.adaptive.license_type=clearkey
