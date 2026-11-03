@@ -1,9 +1,9 @@
 name: JSON → M3U (Kodi ClearKey)
 
 on:
-  workflow_dispatch:          # Manual trigger
+  workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'     # Optional: every 6 hours
+    - cron: '0 */6 * * *'
   push:
     paths:
       - '.github/workflows/json-to-m3u.yml'
@@ -32,19 +32,30 @@ jobs:
           import os
           import sys
 
-          raw = os.environ.get("CHANNELS_JSON", "").strip()
-          if not raw:
-              print("::error::Secret CHANNELS_JSON is empty or missing")
+          raw = os.environ.get("CHANNELS_JSON")
+
+          if raw is None:
+              print("::error::Secret CHANNELS_JSON does not exist")
+              print("Go to Settings → Secrets and variables → Actions and create it")
               sys.exit(1)
+
+          raw = raw.strip()
+          if not raw:
+              print("::error::Secret CHANNELS_JSON is empty")
+              print("Paste your full JSON array into the secret value")
+              sys.exit(1)
+
+          print(f"Secret length: {len(raw)} characters")   # safe debug info
 
           try:
               channels = json.loads(raw)
           except json.JSONDecodeError as e:
               print(f"::error::Invalid JSON: {e}")
+              print("Make sure the secret contains a valid JSON array starting with [")
               sys.exit(1)
 
           if not isinstance(channels, list):
-              print("::error::JSON must be an array")
+              print("::error::JSON root must be an array [ ... ]")
               sys.exit(1)
 
           lines = ["#EXTM3U"]
@@ -61,7 +72,6 @@ jobs:
               if not url or not name:
                   continue
 
-              # Append cookie to URL
               stream = url
               if cookie:
                   sep = "&" if "?" in url else "?"
@@ -84,7 +94,7 @@ jobs:
           with open("jtv.m3u", "w", encoding="utf-8") as f:
               f.write("\n".join(lines).rstrip() + "\n")
 
-          print(f"Generated {len(channels)} channels")
+          print(f"Successfully generated playlist with {len(channels)} channels")
           EOF
 
       - name: Upload M3U as private artifact
