@@ -30,7 +30,7 @@ jobs:
           import urllib.request
           import sys
 
-          API_URL = "https://jiotvapi.droozy.workers.dev/"
+          API_URL = "/"
 
           print(f"Fetching channels from {API_URL} ...")
           try:
