@@ -1,9 +1,9 @@
-name: JSON → M3U (from API)
+name: JSON → M3U (from Secret)
 
 on:
-  workflow_dispatch:          # Manual run
+  workflow_dispatch:
   schedule:
-    - cron: '0 */4 * * *'     # Every 4 hours (optional)
+    - cron: '0 */4 * * *'
   push:
     paths:
       - '.github/workflows/json-to-m3u.yml'
@@ -23,34 +23,31 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Fetch API & Convert to M3U
+      - name: Convert JSON → M3U
+        env:
+          CHANNELS_JSON: ${{ secrets.CHANNELS_JSON }}
         run: |
           python3 << 'EOF'
           import json
-          import urllib.request
+          import os
           import sys
 
-          API_URL = "/"
-
-          print(f"Fetching channels from {API_URL} ...")
-          try:
-              with urllib.request.urlopen(API_URL, timeout=30) as resp:
-                  raw = resp.read().decode("utf-8")
-          except Exception as e:
-              print(f"::error::Failed to fetch API: {e}")
+          raw = os.environ.get("CHANNELS_JSON", "").strip()
+          if not raw:
+              print("::error::Secret CHANNELS_JSON is empty or missing")
               sys.exit(1)
 
           try:
               channels = json.loads(raw)
           except json.JSONDecodeError as e:
-              print(f"::error::Invalid JSON from API: {e}")
+              print(f"::error::Invalid JSON in secret: {e}")
               sys.exit(1)
 
           if not isinstance(channels, list):
-              print("::error::API did not return an array")
+              print("::error::JSON must be an array")
               sys.exit(1)
 
-          print(f"Received {len(channels)} channels")
+          print(f"Loaded {len(channels)} channels from secret")
 
           lines = ["#EXTM3U"]
 
@@ -62,10 +59,9 @@ jobs:
               ch_id    = str(ch.get("id", "")).strip()
               cookie   = str(ch.get("cookie", "")).strip()
 
-              # Handle both key formats
+              # Support both key formats
               keys = str(ch.get("all_keys", "")).strip()
               if not keys:
-                  # single key format: keyId:key
                   key_id = str(ch.get("keyId", "")).strip()
                   key    = str(ch.get("key", "")).strip()
                   if key_id and key:
@@ -74,7 +70,6 @@ jobs:
               if not url or not name:
                   continue
 
-              # Append cookie to stream URL
               stream = url
               if cookie:
                   sep = "&" if "?" in url else "?"
@@ -94,7 +89,7 @@ jobs:
               lines.append(stream)
               lines.append("")
 
-          with open("jtv.m3u", "w", encoding="utf-8") as f:
+          with open("playlist.m3u", "w", encoding="utf-8") as f:
               f.write("\n".join(lines).rstrip() + "\n")
 
           print(f"Successfully generated playlist with {len(channels)} channels")
@@ -104,5 +99,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playlist-${{ github.run_number }}
-          path: jtv.m3u
+          path: playlist.m3u
           retention-days: 7
