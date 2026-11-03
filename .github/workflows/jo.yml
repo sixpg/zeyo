@@ -1,119 +1,91 @@
-name: JSON → M3U
+name: Generate M3U Playlist
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Allows you to run this manually from the Actions tab
   schedule:
-    - cron: '0 */4 * * *'
-  push:
-    paths:
-      - '.github/workflows/json-to-m3u.yml'
+    - cron: '0 */6 * * *' # Optional: Runs automatically every 6 hours. Adjust as needed.
 
 jobs:
-  generate:
+  generate-m3u:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # Required to commit and push the file back to the repo
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.x'
 
-      - name: Fetch API & Convert to M3U
+      - name: Fetch JSON and Generate M3U
         env:
           API_URL: ${{ secrets.API_URL }}
         run: |
           python3 << 'EOF'
           import json
-          import os
           import urllib.request
-          import sys
+          import os
 
-          API_URL = os.environ.get("API_URL", "").strip()
-          if not API_URL:
-              print("::error::Secret API_URL is empty or missing")
-              sys.exit(1)
+          api_url = os.environ.get('API_URL')
+          if not api_url:
+              raise ValueError("API_URL environment variable is not set in Secrets")
 
-          headers = {
-              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-              "Accept": "application/json,text/plain,*/*",
-              "Accept-Language": "en-US,en;q=0.9",
-          }
-
-          print(f"Fetching from secret API_URL ...")
+          # Fetch JSON data from the secret API URL
+          req = urllib.request.Request(api_url, headers={'User-Agent': 'Mozilla/5.0'})
           try:
-              req = urllib.request.Request(API_URL, headers=headers)
-              with urllib.request.urlopen(req, timeout=45) as resp:
-                  raw = resp.read().decode("utf-8")
+              with urllib.request.urlopen(req) as response:
+                  data = json.load(response)
           except Exception as e:
-              print(f"::error::Failed to fetch API: {e}")
-              sys.exit(1)
+              print(f"Failed to fetch JSON from API: {e}")
+              raise e
 
-          try:
-              channels = json.loads(raw)
-          except json.JSONDecodeError as e:
-              print(f"::error::Invalid JSON from API: {e}")
-              sys.exit(1)
+          m3u_content = ["#EXTM3U"]
 
-          if not isinstance(channels, list):
-              print("::error::API did not return an array")
-              sys.exit(1)
+          for channel in data:
+              channel_id = str(channel.get("id", ""))
+              name = channel.get("name", "")
+              logo = channel.get("logo", "")
+              category = channel.get("category", "General")
+              url = channel.get("url", "")
+              cookie = channel.get("cookie", "")
+              all_keys = channel.get("all_keys", "")
 
-          print(f"Received {len(channels)} channels")
-
-          lines = ["#EXTM3U"]
-
-          for ch in channels:
-              name     = str(ch.get("name", "Unknown")).strip()
-              url      = str(ch.get("url", "")).strip()
-              logo     = str(ch.get("logo", "")).strip()
-              category = str(ch.get("category", "Entertainment")).strip()
-              ch_id    = str(ch.get("id", "")).strip()
-              cookie   = str(ch.get("cookie", "")).strip()
-
-              # Support both key formats
-              keys = str(ch.get("all_keys", "")).strip()
-              if not keys:
-                  key_id = str(ch.get("keyId", "")).strip()
-                  key    = str(ch.get("key", "")).strip()
-                  if key_id and key:
-                      keys = f"{key_id}:{key}"
-
-              if not url or not name:
-                  continue
-
-              stream = url
+              # 1. Build EXTINF line
+              extinf = f'#EXTINF:-1 tvg-id="{channel_id}" tvg-name="{name}" tvg-logo="{logo}" group-title="{category}",{name}'
+              m3u_content.append(extinf)
+              
+              # 2. Build KODIPROP lines
+              m3u_content.append("#KODIPROP:inputstream=inputstream.adaptive")
+              m3u_content.append("#KODIPROP:inputstream.adaptive.manifest_type=mpd")
+              m3u_content.append("#KODIPROP:inputstream.adaptive.license_type=clearkey")
+              m3u_content.append(f"#KODIPROP:inputstream.adaptive.license_key={all_keys}")
+              
+              # 3. Build final URL with cookie appended
               if cookie:
-                  sep = "&" if "?" in url else "?"
-                  stream = f"{url}{sep}{cookie}"
+                  separator = "&" if "?" in url else "?"
+                  final_url = f"{url}{separator}{cookie}"
+              else:
+                  final_url = url
+                  
+              m3u_content.append(final_url)
+              m3u_content.append("") # Empty line for readability between channels
 
-              lines.append(
-                  f'#EXTINF:-1 tvg-id="{ch_id}" '
-                  f'tvg-name="{name}" '
-                  f'tvg-logo="{logo}" '
-                  f'group-title="{category}",{name}'
-              )
-              lines.append("#KODIPROP:inputstream=inputstream.adaptive")
-              lines.append("#KODIPROP:inputstream.adaptive.manifest_type=mpd")
-              lines.append("#KODIPROP:inputstream.adaptive.license_type=clearkey")
-              if keys:
-                  lines.append(f"#KODIPROP:inputstream.adaptive.license_key={keys}")
-              lines.append(stream)
-              lines.append("")
-
+          # Write to file
           with open("jtv.m3u", "w", encoding="utf-8") as f:
-              f.write("\n".join(lines).rstrip() + "\n")
-
-          print(f"Successfully generated playlist with {len(channels)} channels")
+              f.write("\n".join(m3u_content).strip() + "\n")
+          
+          print("✅ Successfully generated jtv.m3u")
           EOF
 
-      - name: Upload M3U as private artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: playlist-${{ github.run_number }}
-          path: jtv.m3u
-          retention-days: 7
+      - name: Commit and push generated M3U
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add jtv.m3u
+          
+          # Commit only if there are changes, [skip ci] prevents infinite trigger loops
+          git commit -m "chore: auto-update jtv.m3u [skip ci]" || echo "No changes to commit"
+          git push
