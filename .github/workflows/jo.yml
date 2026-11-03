@@ -1,98 +1,107 @@
-# .github/workflows/update-m3u.yml
-name: Auto Update M3U
+
+name: JSON to M3U Generator
+
 on:
   workflow_dispatch:
   schedule:
     - cron: "*/30 * * * *"
+
+permissions:
+  contents: write
+
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repo
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install Requests
-        run: pip install requests
-
-      - name: Generate M3U
+      - name: Convert JSON to M3U
         env:
-          API_URL: ${{ secrets.API_URL }}
+          JSON_URL: ${{ secrets.JSON_URL }}
         run: |
-          python << 'EOF'
-          import os
+          python3 - <<'PY'
           import json
-          import requests
+          import os
+          import urllib.request
+          from urllib.parse import urlparse
 
-          url = os.environ["API_URL"]
-          response = requests.get(url, timeout=60)
-          data = response.json()
+          request = urllib.request.Request(
+              os.environ["JSON_URL"],
+              headers={"User-Agent": "Mozilla/5.0"}
+          )
 
-          # IDs of channels to filter out
-          EXCLUDED_IDS = {
-              "0-9-zeecafehd",
-              "0-9-channel_2105335046",
-              "1003",
-              "1011",
-              "1018",
-              "1460"
-          }
+          with urllib.request.urlopen(request, timeout=60) as r:
+              data = json.loads(r.read().decode("utf-8"))
 
-          lines = ['#EXTM3U']
+          if isinstance(data, dict):
+              data = data.get("channels", data.get("data", []))
+
+          if not isinstance(data, list):
+              raise ValueError("Invalid JSON format")
+
+          output = ["#EXTM3U"]
+          count = 0
 
           for ch in data:
-              gid = str(ch.get("id", ""))
-              
-              # Skip specified channels
-              if gid in EXCLUDED_IDS:
+              if not isinstance(ch, dict):
                   continue
 
-              name = ch.get("name", "Unknown")
-              logo = ch.get("logo", "")
-              group = ch.get("category", "Live TV")
-              stream = ch.get("url", "")
-              kid = ch.get("keyId", "")
-              key = ch.get("key", "")
-              cookie = ch.get("cookie", "")
+              name = str(ch.get("name") or "").replace('"', "&quot;")
+              cid = str(ch.get("id") or "").replace('"', "&quot;")
+              logo = str(ch.get("logo") or "").replace('"', "&quot;")
+              category = str(ch.get("category") or "").replace('"', "&quot;")
+              url = str(ch.get("url") or "").strip()
 
-              # Channel info line
-              lines.append(f'#EXTINF:-1 tvg-id="{gid}" group-title="{group}" tvg-logo="{logo}",{name}')
+              if not name or not url:
+                  continue
 
-              # Clearkey DRM properties
-              if kid and key and kid not in ["null", None, ""] and key not in ["null", None, ""]:
-                  lines.append("#KODIPROP:inputstream.adaptive.license_type=clearkey")
-                  lines.append(f"#KODIPROP:inputstream.adaptive.license_key={kid}:{key}")
+              if urlparse(url).scheme not in ("http", "https"):
+                  continue
 
-              # User-agent header
-              lines.append("#EXTVLCOPT:http-user-agent=Droovy")
+              output.append(
+                  f'#EXTINF:-1 tvg-id="{cid}" '
+                  f'tvg-name="{name}" tvg-logo="{logo}" '
+                  f'group-title="{category}",{name}'
+              )
 
-              # Cookie headers and stream URL formatting
-              if cookie:
-                  http_prop = json.dumps({"cookie": cookie})
-                  lines.append(f"#EXTHTTP:{http_prop}")
-                  
-                  if "?" in stream:
-                      final_url = f"{stream}&{cookie}"
-                  else:
-                      final_url = f"{stream}?{cookie}"
-              else:
-                  final_url = stream
+              path = urlparse(url).path.lower()
 
-              lines.append(final_url)
-              lines.append("")
+              if path.endswith(".mpd"):
+                  output.extend([
+                      "#KODIPROP:inputstream=inputstream.adaptive",
+                      "#KODIPROP:inputstream.adaptive.manifest_type=mpd"
+                  ])
 
-          with open("jtv.m3u", "w", encoding="utf-8") as f:
-              f.write("\n".join(lines))
-          EOF
+              elif path.endswith(".m3u8"):
+                  output.extend([
+                      "#KODIPROP:inputstream=inputstream.adaptive",
+                      "#KODIPROP:inputstream.adaptive.manifest_type=hls"
+                  ])
 
-      - name: Commit Files
+              output.append(url)
+              count += 1
+
+          if count == 0:
+              raise ValueError("No valid channels found")
+
+          with open("output.m3u", "w", encoding="utf-8") as f:
+              f.write("\n".join(output) + "\n")
+
+          print(f"Generated {count} channels")
+          PY
+
+      - name: Commit and Push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add jtv.m3u
-          git commit -m "Auto update playlist" || echo "No changes"
-          git push
+
+          git add output.m3u
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Update M3U playlist"
+            git push
+          else
+            echo "No changes detected"
+          fi
