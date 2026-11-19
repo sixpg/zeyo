@@ -61,7 +61,33 @@ jobs:
               m3u_content.append("#KODIPROP:inputstream=inputstream.adaptive")
               m3u_content.append("#KODIPROP:inputstream.adaptive.manifest_type=mpd")
               m3u_content.append("#KODIPROP:inputstream.adaptive.license_type=clearkey")
-              m3u_content.append(f"#KODIPROP:inputstream.adaptive.license_key={all_keys}")
+
+              # ----- FIXED ClearKey handling -----
+              # Convert "kid1:key1,kid2:key2,..." → proper JSON object so ALL keys are used
+              if all_keys:
+                  key_pairs = {}
+                  for pair in all_keys.split(","):
+                      pair = pair.strip()
+                      if ":" in pair:
+                          kid, key = pair.split(":", 1)
+                          kid = kid.strip()
+                          key = key.strip()
+                          if kid and key:
+                              key_pairs[kid] = key
+
+                  if key_pairs:
+                      # Preferred multi-key format for license_key
+                      license_key_json = json.dumps(key_pairs, separators=(',', ':'))
+                      m3u_content.append(f"#KODIPROP:inputstream.adaptive.license_key={license_key_json}")
+
+                      # Also emit modern drm_legacy (works better on Kodi 21+)
+                      # Format: org.w3.clearkey|kid1:key1,kid2:key2,...
+                      legacy_keys = ",".join(f"{k}:{v}" for k, v in key_pairs.items())
+                      m3u_content.append(f"#KODIPROP:inputstream.adaptive.drm_legacy=org.w3.clearkey|{legacy_keys}")
+                  else:
+                      # Fallback – keep original string just in case
+                      m3u_content.append(f"#KODIPROP:inputstream.adaptive.license_key={all_keys}")
+              # -----------------------------------
               
               # 3. Build final URL with cookie appended
               if cookie:
