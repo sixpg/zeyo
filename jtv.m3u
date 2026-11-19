@@ -10152,14 +10152,6 @@ https://jiotvmblive.cdn.jio.com/bpk-tv/ETV_Telangana_MOB/WDVLive/index.mpd?__hdn
 #EXTVLCOPT:http-origin=https://www.jiotv.com
 https://livestream.sunnxt.com/ed4c67ad957644b69361651d9101107e/ChintuTVB_IN_index.mpd
 
-#EXTINF:-1 tvg-id="sri-lanka-a-vs-afghanistan-a---19-nov-2026--eng----acc-men-s-asia-cup-rising-stars-2026" tvg-name="Sri Lanka A vs Afghanistan A - 19 Nov 2026 [ENG] - ACC Men's Asia Cup Rising Stars 2026" tvg-logo="https://origin-staticv2.sonyliv.com/videoasset_images/manage_file/1000029388/1795079673412862_ACRS26_SLvsAFG_landscape_thumb.jpg" group-title="LIVE SPORTS | STREAMX",Sri Lanka A vs Afghanistan A - 19 Nov 2026 [ENG] - ACC Men's Asia Cup Rising Stars 2026
-#KODIPROP:inputstream.adaptive.manifest_type=mpd
-#KODIPROP:inputstream.adaptive.license_type=org.w3.clearkey
-#EXTVLCOPT:http-user-agent=Droovy
-#EXTVLCOPT:http-referrer=https://www.jiotv.com/
-#EXTVLCOPT:http-origin=https://www.jiotv.com
-https://sonyeventsglobal.akamaized.net/hls/live/2120301/criclive1911/ENG/std_lrh-800300010.m3u8?hdnea=exp=1795142510~acl=/*~id=09707978880892248986709574071392~hmac=175ad92321a10b6d8da0c35ea45694fdaee9e393aee48f27cb1222bd6ce90ae7
-
 #EXTINF:-1 tvg-id="B0HQ59J76F" tvg-name="Triton Poker Series Cyprus-$50K NLH 8-Handed" tvg-logo="https://images-na.ssl-images-amazon.com/images/W/BW_MEDIAX_AVIF_MEASUREMENT_1306696-T4/images/S/le-target-images-prod/amzn1.dv.gti.6a7a9aa4-48e8-4e33-b61f-6ebcb5f31406/4/BOXART-16X9/en-US._UR1920,1080_CLs%7C1920,1080%7C/G/bundle/BottomRightCardGradient16x9.png,/G/01/digital/video/merch/subs/benefit-id/a-f/freewithads/logos/channels-logo-white.png%7C0,0,1920,1080+0,0,1920,1080+1578,847,263,156_kv053498f62d21803ffcbf28da234cfe9f_SX624_FMjpg_.jpeg" group-title="LIVE SPORTS | STREAMX",Triton Poker Series Cyprus-$50K NLH 8-Handed
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
 #KODIPROP:inputstream.adaptive.license_type=org.w3.clearkey
@@ -10174,15 +10166,7 @@ https://hls-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/znpxp4vhy
 #EXTVLCOPT:http-user-agent=Droovy
 #EXTVLCOPT:http-referrer=https://www.jiotv.com/
 #EXTVLCOPT:http-origin=https://www.jiotv.com
-https://hls-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/bfigtl960n/out/v1/5ba5484550e84681bff2e8ca994266c1/cenc.mpd
-
-#EXTINF:-1 tvg-id="B0HQQYZ77B" tvg-name="Abu Dhabi T10 League 2026 - 29th Match - Yas Lions vs Royal Desert Champions" tvg-logo="https://images-na.ssl-images-amazon.com/images/W/BW_MEDIAX_AVIF_MEASUREMENT_1306696-T4/images/S/le-target-images-prod/amzn1.dv.gti.0fd0c08b-5ecf-4479-84a1-72be8df60b4b/2/BOXART-16X9/en-US._UR1920,1080_CLs%7C1920,1080%7C/G/bundle/BottomRightCardGradient16x9.png,/G/01/digital/video/merch/subs/benefit-id/s-z/willowtv/logos/channels-logo-white-stacked.png%7C0,0,1920,1080+0,0,1920,1080+1724,885,117,117_kvebed36e78eaa0330f200bb6045a52aca_SX624_FMjpg_.jpeg" group-title="LIVE SPORTS | STREAMX",Abu Dhabi T10 League 2026 - 29th Match - Yas Lions vs Royal Desert Champions
-#KODIPROP:inputstream.adaptive.manifest_type=mpd
-#KODIPROP:inputstream.adaptive.license_type=org.w3.clearkey
-#EXTVLCOPT:http-user-agent=Droovy
-#EXTVLCOPT:http-referrer=https://www.jiotv.com/
-#EXTVLCOPT:http-origin=https://www.jiotv.com
-https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/onhhok4gqg/out/v1/b286f1b90a364e10976bcc541a8d99c2/cenc.mpd
+https://dash-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/bfigtl960n/out/v1/5ba5484550e84681bff2e8ca994266c1/cenc.mpd
 
 #EXTINF:-1 tvg-id="B0HQNB4R4L" tvg-name="Sri Lanka A vs. Afghanistan A" tvg-logo="https://images-na.ssl-images-amazon.com/images/W/BW_MEDIAX_AVIF_MEASUREMENT_1306696-T4/images/S/le-target-images-prod/amzn1.dv.gti.c3b8a24d-2f81-4fbb-bf01-fcf96f1c092a/3/BOXART-16X9/en-US._UR1920,1080_CLs%7C1920,1080%7C/G/bundle/BottomRightCardGradient16x9.png,/G/01/digital/video/merch/subs/benefit-id/a-f/freewithads/logos/channels-logo-white.png%7C0,0,1920,1080+0,0,1920,1080+1578,847,263,156_kv053498f62d21803ffcbf28da234cfe9f_SX624_FMjpg_.jpeg" group-title="LIVE SPORTS | STREAMX",Sri Lanka A vs. Afghanistan A
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
@@ -10190,7 +10174,15 @@ https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/onhhok4gqg/
 #EXTVLCOPT:http-user-agent=Droovy
 #EXTVLCOPT:http-referrer=https://www.jiotv.com/
 #EXTVLCOPT:http-origin=https://www.jiotv.com
-https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/0bftapixow/out/v1/a435ed7a00f947deb4369b46d8f2fb70/cenc.mpd
+https://dash-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/0bftapixow/out/v1/a435ed7a00f947deb4369b46d8f2fb70/cenc.mpd
+
+#EXTINF:-1 tvg-id="B0HQQYZ77B" tvg-name="Abu Dhabi T10 League 2026 - 29th Match - Yas Lions vs Royal Desert Champions" tvg-logo="https://images-na.ssl-images-amazon.com/images/W/BW_MEDIAX_AVIF_MEASUREMENT_1306696-T4/images/S/le-target-images-prod/amzn1.dv.gti.0fd0c08b-5ecf-4479-84a1-72be8df60b4b/2/BOXART-16X9/en-US._UR1920,1080_CLs%7C1920,1080%7C/G/bundle/BottomRightCardGradient16x9.png,/G/01/digital/video/merch/subs/benefit-id/s-z/willowtv/logos/channels-logo-white-stacked.png%7C0,0,1920,1080+0,0,1920,1080+1724,885,117,117_kvebed36e78eaa0330f200bb6045a52aca_SX624_FMjpg_.jpeg" group-title="LIVE SPORTS | STREAMX",Abu Dhabi T10 League 2026 - 29th Match - Yas Lions vs Royal Desert Champions
+#KODIPROP:inputstream.adaptive.manifest_type=mpd
+#KODIPROP:inputstream.adaptive.license_type=org.w3.clearkey
+#EXTVLCOPT:http-user-agent=Droovy
+#EXTVLCOPT:http-referrer=https://www.jiotv.com/
+#EXTVLCOPT:http-origin=https://www.jiotv.com
+https://otte.cache.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/onhhok4gqg/out/v1/b286f1b90a364e10976bcc541a8d99c2/cenc.mpd
 
 #EXTINF:-1 tvg-id="B0HQ8BWTDG" tvg-name="ACC Mens Asia Cup Rising Stars 2026 - 2nd Match - Sri Lanka A vs Afghanistan A" tvg-logo="https://images-na.ssl-images-amazon.com/images/W/BW_MEDIAX_AVIF_MEASUREMENT_1306696-T4/images/S/le-target-images-prod/amzn1.dv.gti.8109aef6-9965-41fd-8dd0-3c2289b8cda8/4/BOXART-16X9/en-US._UR1920,1080_CLs%7C1920,1080%7C/G/bundle/BottomRightCardGradient16x9.png,/G/01/digital/video/merch/subs/benefit-id/s-z/willowtv/logos/channels-logo-white-stacked.png%7C0,0,1920,1080+0,0,1920,1080+1724,885,117,117_kvebed36e78eaa0330f200bb6045a52aca_SX624_FMjpg_.jpeg" group-title="LIVE SPORTS | STREAMX",ACC Mens Asia Cup Rising Stars 2026 - 2nd Match - Sri Lanka A vs Afghanistan A
 #KODIPROP:inputstream.adaptive.manifest_type=mpd
@@ -10198,4 +10190,4 @@ https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/0bftapixow/out/v1
 #EXTVLCOPT:http-user-agent=Droovy
 #EXTVLCOPT:http-referrer=https://www.jiotv.com/
 #EXTVLCOPT:http-origin=https://www.jiotv.com
-https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/cix65j0fhp/out/v1/40e83e3831354f46aa6c4f7f33b22606/cenc.mpd
+https://dash-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/cix65j0fhp/out/v1/40e83e3831354f46aa6c4f7f33b22606/cenc.mpd
