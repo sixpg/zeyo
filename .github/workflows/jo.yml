@@ -1,15 +1,15 @@
 name: Generate M3U Playlist
 
 on:
-  workflow_dispatch: # Allows you to run this manually from the Actions tab
+  workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *' # Optional: Runs automatically every 6 hours. Adjust as needed.
+    - cron: '0 */6 * * *'
 
 jobs:
   generate-m3u:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Required to commit and push the file back to the repo
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -33,7 +33,6 @@ jobs:
           if not api_url:
               raise ValueError("API_URL environment variable is not set in Secrets")
 
-          # Fetch JSON data from the secret API URL
           req = urllib.request.Request(api_url, headers={'User-Agent': 'Mozilla/5.0'})
           try:
               with urllib.request.urlopen(req) as response:
@@ -42,7 +41,7 @@ jobs:
               print(f"Failed to fetch JSON from API: {e}")
               raise e
 
-          m3u_content = ["#EXTM3U"]
+          m3u_content = ["#EXTM3U", ""]
 
           for channel in data:
               channel_id = str(channel.get("id", ""))
@@ -53,17 +52,18 @@ jobs:
               cookie = channel.get("cookie", "")
               all_keys = channel.get("all_keys", "")
 
-              # 1. Build EXTINF line
-              extinf = f'#EXTINF:-1 tvg-id="{channel_id}" tvg-name="{name}" tvg-logo="{logo}" group-title="{category}",{name}'
+              # EXTINF line (with logo if available)
+              if logo:
+                  extinf = f'#EXTINF:-1 tvg-id="{channel_id}" tvg-name="{name}" tvg-logo="{logo}" group-title="{category}",{name}'
+              else:
+                  extinf = f'#EXTINF:-1 tvg-id="{channel_id}" tvg-name="{name}" group-title="{category}",{name}'
               m3u_content.append(extinf)
-              
-              # 2. Build KODIPROP lines
-              m3u_content.append("#KODIPROP:inputstream=inputstream.adaptive")
-              m3u_content.append("#KODIPROP:inputstream.adaptive.manifest_type=mpd")
-              m3u_content.append("#KODIPROP:inputstream.adaptive.license_type=clearkey")
 
-              # ----- FIXED ClearKey handling -----
-              # Convert "kid1:key1,kid2:key2,..." → proper JSON object so ALL keys are used
+              # KODIPROP lines (exact format you requested)
+              m3u_content.append("#KODIPROP:inputstream.adaptive.manifest_type=mpd")
+              m3u_content.append("#KODIPROP:inputstream.adaptive.license_type=org.w3.clearkey")
+
+              # Convert all_keys → JSON object {"kid1":"key1","kid2":"key2",...}
               if all_keys:
                   key_pairs = {}
                   for pair in all_keys.split(","):
@@ -76,33 +76,27 @@ jobs:
                               key_pairs[kid] = key
 
                   if key_pairs:
-                      # Preferred multi-key format for license_key
                       license_key_json = json.dumps(key_pairs, separators=(',', ':'))
                       m3u_content.append(f"#KODIPROP:inputstream.adaptive.license_key={license_key_json}")
 
-                      # Also emit modern drm_legacy (works better on Kodi 21+)
-                      # Format: org.w3.clearkey|kid1:key1,kid2:key2,...
-                      legacy_keys = ",".join(f"{k}:{v}" for k, v in key_pairs.items())
-                      m3u_content.append(f"#KODIPROP:inputstream.adaptive.drm_legacy=org.w3.clearkey|{legacy_keys}")
-                  else:
-                      # Fallback – keep original string just in case
-                      m3u_content.append(f"#KODIPROP:inputstream.adaptive.license_key={all_keys}")
-              # -----------------------------------
-              
-              # 3. Build final URL with cookie appended
+              # EXTVLCOPT headers (exactly as you specified)
+              m3u_content.append("#EXTVLCOPT:http-user-agent=Droovy")
+              m3u_content.append("#EXTVLCOPT:http-referrer=https://www.jiotv.com/")
+              m3u_content.append("#EXTVLCOPT:http-origin=https://www.jiotv.com")
+
+              # Final URL + cookie
               if cookie:
                   separator = "&" if "?" in url else "?"
                   final_url = f"{url}{separator}{cookie}"
               else:
                   final_url = url
-                  
-              m3u_content.append(final_url)
-              m3u_content.append("") # Empty line for readability between channels
 
-          # Write to file
+              m3u_content.append(final_url)
+              m3u_content.append("")  # blank line between channels
+
           with open("jtv.m3u", "w", encoding="utf-8") as f:
               f.write("\n".join(m3u_content).strip() + "\n")
-          
+
           print("✅ Successfully generated jtv.m3u")
           EOF
 
@@ -111,7 +105,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add jtv.m3u
-          
-          # Commit only if there are changes, [skip ci] prevents infinite trigger loops
           git commit -m "chore: auto-update jtv.m3u [skip ci]" || echo "No changes to commit"
           git push
